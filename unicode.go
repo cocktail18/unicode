@@ -1,4 +1,4 @@
-package go_unicode
+package unicode
 
 
 import (

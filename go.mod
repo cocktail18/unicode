@@ -1,3 +1,3 @@
-module cocktail1024.top/go-unicode
+module github.com/cocktail18/unicode
 
 go 1.15
