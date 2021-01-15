@@ -1,5 +1,5 @@
 # go-unicode
-parse unicode to string
+parse unicode string to utf8 string
 
 ## example
 ```go
