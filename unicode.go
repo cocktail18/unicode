@@ -1,6 +1,5 @@
 package unicode
 
-
 import (
 	"bytes"
 	"encoding/binary"
@@ -25,20 +24,30 @@ const (
 	unicodeSurrSelf = 0x10000
 )
 
-func UnicodeToString(from string) (to string, err error) {
+func UnicodeToString(from string) (string, error) {
 	reg1 := regexp.
 		MustCompile("(\\\\u[0-9a-fA-F]{4})+")
-	matchers := reg1.FindAllStringSubmatch(from, -1)
-	to = from
-	for _, matcher := range matchers {
-		var tmp string
-		tmp, err = unicodeToString(matcher[0])
-		if err != nil {
-			return
+
+	var loc []int
+	toBuff := strings.Builder{}
+	for {
+		loc = reg1.FindStringIndex(from)
+		if loc == nil {
+			toBuff.WriteString(from)
+			break
 		}
-		to = strings.ReplaceAll(to, matcher[0], tmp)
+		toBuff.WriteString(from[:loc[0]])
+		tmp, err := unicodeToString(from[loc[0]:loc[1]])
+		if err != nil {
+			return "", err
+		}
+		toBuff.WriteString(tmp)
+		if len(from) <= loc[1] {
+			break
+		}
+		from = from[loc[1]:]
 	}
-	return
+	return toBuff.String(), nil
 }
 
 func unicodeToString(form string) (to string, err error) {
